@@ -56,9 +56,11 @@ public class ServerHttpHandler extends AbstractHttpHandler {
             if (server.isJobComplete()) {
                 System.out.println();
                 System.out.println("server: job completed!");
-                server.getStats().print(server.getStartTime());
+                server.getStats().print(server.getStartTime(), server.getStatsReceived());
                 System.out.println();
             }
+            
+            server.reset();
             
             ret(response, "OK");
             return;

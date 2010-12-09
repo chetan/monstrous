@@ -37,10 +37,15 @@ public class Stats {
     }
     
     public void print(long startTime) {
+        print(startTime, 1);
+    }
+    
+    public void print(long startTime, int numStatsReceived) {
         
         long elapse = System.currentTimeMillis() - startTime;
         float throughput = ((float) Math.round(((float)getSuccessCount() / ((float)elapse/1000)) * 100F)) / 100F;
         
+        System.out.println("Num agents: " + numStatsReceived);
         System.out.println("Elapsed time: " + elapse + "ms");
         System.out.println("Throughput: " + throughput + " req/s");
         
