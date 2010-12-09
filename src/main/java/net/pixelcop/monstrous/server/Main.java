@@ -2,16 +2,32 @@ package net.pixelcop.monstrous.server;
 
 import net.pixelcop.monstrous.http.NullJettyLogger;
 
-public class Main {
+public class Main extends Thread {
     
     public static void main(String[] args) throws Exception {
+        new Main(args);        
+    }
+    
+    public Main(String[] args) throws Exception {
+        
+        Runtime.getRuntime().addShutdownHook(this);
         
         NullJettyLogger.install();
         
         org.mortbay.jetty.Server server = new org.mortbay.jetty.Server(9999);
         server.setHandler(new ServerJettyHandler());
         server.start();
-        
+    }
+    
+    @Override
+    public void run() {
+        System.out.println("Shutting down..");
+        Server server = Server.getInstance();
+        if (server.getStats() != null) {
+            System.out.println();
+            System.out.println("Results of last running job:");
+            server.printStats();
+        }
     }
 
 }

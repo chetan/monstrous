@@ -23,7 +23,7 @@ public class Server {
     private Job job;
     private int numClientsProcessing;
     private Stats stats;
-    private int statsReceived;
+    private int numStatsReceived;
     private long startTime;
     
     private Server() {
@@ -38,7 +38,7 @@ public class Server {
     public void reset() {
         job = null;
         numClientsProcessing = 0;
-        statsReceived = 0;
+        numStatsReceived = 0;
         stats = null;
         startTime = 0;
     }
@@ -86,7 +86,7 @@ public class Server {
     
     public void addStats(Stats stats) {
         this.stats.add(stats);
-        statsReceived++;
+        numStatsReceived++;
         numClientsProcessing--;
     }
 
@@ -141,8 +141,8 @@ public class Server {
         return startTime;
     }
     
-    public int getStatsReceived() {
-        return statsReceived;
+    public int getNumStatsReceived() {
+        return numStatsReceived;
     }
 
     public void removeClient(String hostAddress) {
@@ -157,6 +157,13 @@ public class Server {
             }
         }
         
+    }
+
+    public void printStats() {
+        if (stats == null) {
+            return;
+        }
+        stats.print(startTime, numStatsReceived);
     }
 
 }

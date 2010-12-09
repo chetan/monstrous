@@ -43,7 +43,7 @@ public class ServerJettyHandler extends AbstractJettyHandler {
             if (server.isJobComplete()) {
                 System.out.println();
                 System.out.println("server: job completed!");
-                server.getStats().print(server.getStartTime(), server.getStatsReceived());
+                server.printStats();
                 System.out.println();
             }
             
