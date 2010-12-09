@@ -1,12 +1,4 @@
 
-def add_dependencies(pkg)
-  tempfile = pkg.to_s.sub(/.jar$/, "-without-dependencies.jar")
-  mv pkg.to_s, tempfile
-
-  dependencies = compile.dependencies.map { |d| "-c #{d}"}.join(" ")
-  sh "java -jar tools/autojar.jar -baev -o #{pkg} #{dependencies} #{tempfile}"
-end
-
 COMMONS_CODEC = [ "commons-codec:commons-codec:jar:1.4" ]
 COMMONS_COLLECTIONS = [ "commons-collections:commons-collections:jar:3.2" ]
 COMMONS_FILEUPLOAD = [ "commons-fileupload:commons-fileupload:jar:1.2.1" ]

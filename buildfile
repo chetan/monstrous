@@ -24,6 +24,16 @@ define "monstrous" do
   compile.with JARS
   
   package(:jar)
-  package(:jar).enhance { |pkg| pkg.enhance { |pkg| add_dependencies(pkg) }}
+
+  package(:zip).path("#{project.name}-#{VERSION_NUMBER}").tap do |path|
+    path.include _("bin/*")
+  end
+
+  package(:zip).path("#{project.name}-#{VERSION_NUMBER}/lib").tap do |path|
+    path.include _("target/#{project.name}-#{VERSION_NUMBER}.jar")
+    compile.dependencies.each do |d|
+      path.include _("#{d}")
+    end
+  end
   
 end
