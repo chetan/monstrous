@@ -81,7 +81,7 @@ public class Server {
     }
     
     public boolean isJobComplete() {
-        return (numClientsProcessing == 0);
+        return (numClientsProcessing <= 0);
     }
     
     public void addStats(Stats stats) {

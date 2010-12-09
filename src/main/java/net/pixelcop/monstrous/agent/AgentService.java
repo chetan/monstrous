@@ -53,7 +53,8 @@ public class AgentService {
         this.server = server;
         LoadTester tester = new LoadTester(job);
         try {
-            tester.begin();
+            // start up test in a new thread so we can return quickly
+            tester.start(); 
         } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

@@ -10,7 +10,7 @@ public class Main {
         job.setNumThreads(getThreadCount(args));
         
         LoadTester tester = new LoadTester(job);
-        tester.begin();
+        tester.start();
     }
     
     public static int getThreadCount(String[] args) {

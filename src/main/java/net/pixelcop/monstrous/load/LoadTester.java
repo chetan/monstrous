@@ -22,35 +22,6 @@ public class LoadTester extends Thread {
         this.cutoffTime = 0;
     }
     
-    public void begin() throws Exception {
-        
-        System.out.println("Starting up with " + job.getNumThreads() + " threads @ " + new Date().toString());
-        
-        //Runtime.getRuntime().addShutdownHook(this);
-
-        HttpUriRequest request = new HttpGet((job.getUrl()));
-        
-        startTime = System.currentTimeMillis();
-        
-        if (job.getType() == Job.T_TIME_LIMIT) {
-            cutoffTime = System.currentTimeMillis() + (job.getNumSeconds() * 1000);
-        }
-
-        threads = new ArrayList<HttpThread>();
-        for (int i = 0; i < job.getNumThreads(); i++) {
-            createThread(request);
-        }
-        
-        TestWatcher watcher = new TestWatcher(this);
-        watcher.start();
-        
-        // wait for all threads to finish
-//        for (HttpThread thread : threads) {
-//            thread.join();
-//        }
-
-    }
-    
     /**
      * Collect stats from all threads
      * 
@@ -95,10 +66,24 @@ public class LoadTester extends Thread {
     @Override
     public void run() {
 
-        System.out.println("");
-        System.out.println("Shutting down threads...\n");
+        System.out.println("Starting up with " + job.getNumThreads() + " threads @ " + new Date().toString());
+
+        HttpUriRequest request = new HttpGet((job.getUrl()));
         
-        shutdown();
+        startTime = System.currentTimeMillis();
+        
+        if (job.getType() == Job.T_TIME_LIMIT) {
+            cutoffTime = System.currentTimeMillis() + (job.getNumSeconds() * 1000);
+        }
+
+        threads = new ArrayList<HttpThread>();
+        for (int i = 0; i < job.getNumThreads(); i++) {
+            createThread(request);
+        }
+        
+        TestWatcher watcher = new TestWatcher(this);
+        watcher.start();
+        
     }
 
     public Job getJob() {
