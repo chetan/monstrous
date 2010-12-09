@@ -2,6 +2,8 @@ package net.pixelcop.monstrous.agent;
 
 import java.io.IOException;
 
+import net.pixelcop.monstrous.http.NullJettyLogger;
+
 public class Main extends Thread {
     
     private String serverHost;
@@ -26,10 +28,11 @@ public class Main extends Thread {
         
         AgentService.getInstance().register(serverHost);
         
-        AgentHttpServer agentServer = new AgentHttpServer();
-        agentServer.start();
-        agentServer.join(); 
+        NullJettyLogger.install();
         
+        org.mortbay.jetty.Server server = new org.mortbay.jetty.Server(9998);
+        server.setHandler(new AgentJettyHandler());
+        server.start();
     }
     
     @Override

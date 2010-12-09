@@ -26,7 +26,7 @@ public class ServerHttpHandler extends AbstractHttpHandler {
         
         if (uri.equalsIgnoreCase("/client/register")) {
             System.out.println("server: registering new client");
-            Server.getInstance().addClient(new Node(getRemoteInetAddress(context)));
+            Server.getInstance().addClient(new Node(getRemoteInetAddress(context).getHostAddress()));
             ret(response, "OK");
             return;
         }

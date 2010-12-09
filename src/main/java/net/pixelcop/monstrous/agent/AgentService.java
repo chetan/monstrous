@@ -68,7 +68,7 @@ public class AgentService {
      */
     public void report(Stats stats) {
         
-        String uri = "http://" + server.getAddress().getHostAddress() + ":9999/stats/report";
+        String uri = "http://" + server.getAddress() + ":9999/stats/report";
         HttpPost post = new HttpPost(uri);
         try {
             post.setEntity(new StringEntity(JsonUtils.toJsonString(stats)));

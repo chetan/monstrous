@@ -109,7 +109,7 @@ public abstract class AbstractNHttpServer extends Thread {
         ListeningIOReactor ioReactor = null;
         
         try {
-            ioReactor = new DefaultListeningIOReactor(2, params);
+            ioReactor = new DefaultListeningIOReactor(4, params);
         } catch (IOReactorException e) {
             System.err.println("Failed to start server");
             e.printStackTrace();

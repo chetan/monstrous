@@ -26,7 +26,7 @@ public class AgentHttpHandler extends AbstractHttpHandler {
         if (uri.equalsIgnoreCase("/job/new")) {
             System.out.println("agent: got job from server");
             Job job = (Job) JsonUtils.fromJsonString(readBody(request), Job.class);
-            Node server = new Node(getRemoteInetAddress(context));
+            Node server = new Node(getRemoteInetAddress(context).getHostAddress());
             AgentService.getInstance().start(server, job);
             ret(response, "OK");
             return;

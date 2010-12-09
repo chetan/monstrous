@@ -2,7 +2,6 @@ package net.pixelcop.monstrous.server;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.net.InetAddress;
 import java.util.Vector;
 
 import net.pixelcop.monstrous.Job;
@@ -100,8 +99,7 @@ public class Server {
      * @throws ClientProtocolException 
      */
     private void sendJob(Node node, Job job) throws IOException {
-        InetAddress addr = node.getAddress();
-        String uri = "http://" + addr.getHostAddress() + ":9998/job/new";
+        String uri = "http://" + node.getAddress() + ":9998/job/new";
         System.out.println(uri);
         HttpPost post = new HttpPost(uri);
         try {
@@ -150,7 +148,7 @@ public class Server {
     public void removeClient(String hostAddress) {
        
         for (Node node : clients) {
-            if (node.getAddress().getHostAddress().equalsIgnoreCase(hostAddress)) {
+            if (node.getAddress().equalsIgnoreCase(hostAddress)) {
                 clients.remove(node);
                 if (job != null && numClientsProcessing > 0) {
                     numClientsProcessing--;

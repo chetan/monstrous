@@ -24,3 +24,9 @@ JSON_LIB = [
     "net.sf.ezmorph:ezmorph:jar:1.0.6",
     "net.sf.json-lib:json-lib:jar:2.2.3"
     ] + COMMONS_LOGGING + COMMONS_LANG + COMMONS_COLLECTIONS
+    
+JETTY = [
+    "org.mortbay.jetty:jetty-util:jar:6.1.26",
+    "org.mortbay.jetty:jetty:jar:6.1.26",
+    "org.mortbay.jetty:servlet-api:jar:2.5-20081211"
+    ]

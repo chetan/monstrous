@@ -10,7 +10,7 @@ repositories.remote << "http://www.ibiblio.org/maven2/"
 
 require 'buildfile_libraries'
 
-JARS = artifacts([ HTTPCLIENT, JSON_LIB ].flatten.uniq)
+JARS = artifacts([ HTTPCLIENT, JSON_LIB, JETTY ].flatten.uniq)
 
 desc "The Monstrous project"
 define "monstrous" do
