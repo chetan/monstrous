@@ -6,7 +6,7 @@ GROUP = "monstrous"
 COPYRIGHT = ""
 
 # Specify Maven 2.0 remote repositories here, like this:
-repositories.remote << "http://www.ibiblio.org/maven2/"
+repositories.remote << "http://mirrors.ibiblio.org/pub/mirrors/maven2"
 
 require 'buildfile_libraries'
 

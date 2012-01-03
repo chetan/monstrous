@@ -14,19 +14,23 @@ COMMONS_DBCP = [
 ] + COMMONS_POOL
 
 HTTPCLIENT = [
-    "org.apache.httpcomponents:httpclient:jar:4.0.3",
-    "org.apache.httpcomponents:httpcore:jar:4.1",
-    "org.apache.httpcomponents:httpcore-nio:jar:4.1"
+    "org.apache.httpcomponents:httpclient:jar:4.1.2",
+    "org.apache.httpcomponents:httpcore:jar:4.1.4",
+    "org.apache.httpcomponents:httpcore-nio:jar:4.1.4"
     ] + COMMONS_CODEC + COMMONS_LOGGING
-    
+
 JSON_LIB = [
     "commons-beanutils:commons-beanutils:jar:1.7.0",
     "net.sf.ezmorph:ezmorph:jar:1.0.6",
     "net.sf.json-lib:json-lib:jar:2.2.3"
     ] + COMMONS_LOGGING + COMMONS_LANG + COMMONS_COLLECTIONS
-    
+
+JETTY_VERSION = "7.5.4.v20111024"
 JETTY = [
-    "org.mortbay.jetty:jetty-util:jar:6.1.26",
-    "org.mortbay.jetty:jetty:jar:6.1.26",
-    "org.mortbay.jetty:servlet-api:jar:2.5-20081211"
-    ]
+  "javax.servlet:servlet-api:jar:2.5",
+  "org.eclipse.jetty:jetty-continuation:jar:#{JETTY_VERSION}",
+  "org.eclipse.jetty:jetty-http:jar:#{JETTY_VERSION}",
+  "org.eclipse.jetty:jetty-io:jar:#{JETTY_VERSION}",
+  "org.eclipse.jetty:jetty-server:jar:#{JETTY_VERSION}",
+  "org.eclipse.jetty:jetty-util:jar:#{JETTY_VERSION}"
+  ]
