@@ -8,22 +8,22 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.http.util.CharArrayBuffer;
-import org.mortbay.jetty.Request;
-import org.mortbay.jetty.handler.AbstractHandler;
+import org.eclipse.jetty.server.Request;
+import org.eclipse.jetty.server.handler.AbstractHandler;
 
 public abstract class AbstractJettyHandler extends AbstractHandler {
-
+    
     @Override
-    public void handle(String target, HttpServletRequest request, HttpServletResponse response,
-            int dispatch) throws IOException, ServletException {
-        
+    public void handle(String target, Request baseRequest, HttpServletRequest request,
+            HttpServletResponse response) throws IOException, ServletException {
+
         response.setContentType("text/json");
         response.setStatus(HttpServletResponse.SC_OK);
         
         String res = handle(target, request, response);
         response.getOutputStream().println(res);
         
-        ((Request)request).setHandled(true);
+        baseRequest.setHandled(true);        
     }
     
     /**
