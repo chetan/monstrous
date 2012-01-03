@@ -5,26 +5,27 @@ import java.util.Date;
 
 import net.pixelcop.monstrous.Job;
 import net.pixelcop.monstrous.Stats;
+import net.pixelcop.monstrous.agent.AgentService;
 
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpUriRequest;
 
 public class LoadTester extends Thread {
-    
+
     private Job job;
     private ArrayList<HttpThread> threads;
-    
+
     private long startTime;
     private long cutoffTime;
-    
+
     public LoadTester(Job job) {
         this.job = job;
         this.cutoffTime = 0;
     }
-    
+
     /**
      * Collect stats from all threads
-     * 
+     *
      * @return
      */
     public Stats collectStats() {
@@ -32,35 +33,45 @@ public class LoadTester extends Thread {
         for (HttpThread thread : threads) {
             stats.add(thread.getStats());
         }
-        return stats;        
+        return stats;
     }
-    
+
     private void createThread(HttpUriRequest request) {
         HttpThread t = new HttpThread(request);
         t.setCutoffTime(cutoffTime);
         t.start();
         threads.add(t);
     }
-    
-    public void shutdown() {
-        
-        Stats stats = new Stats();
-        
+
+//    public void shutdown() {
+//
+//        Stats stats = new Stats();
+//
+//        for (HttpThread thread : threads) {
+//
+//            thread.interrupt();
+//
+////            try {
+////                thread.join();
+////            } catch (InterruptedException e) {
+////            }
+//
+//            stats.add(thread.getStats());
+//        }
+//
+//        System.out.println("Shutdown completed @ " + new Date().toString() + "\n");
+//
+//        stats.print(startTime);
+//    }
+
+    private void joinThreads() {
         for (HttpThread thread : threads) {
-            
-            thread.interrupt();
-            
-//            try {
-//                thread.join();
-//            } catch (InterruptedException e) {
-//            }
-            
-            stats.add(thread.getStats());
+            try {
+                thread.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
-        
-        System.out.println("Shutdown completed @ " + new Date().toString() + "\n");
-        
-        stats.print(startTime);
     }
 
     @Override
@@ -69,9 +80,9 @@ public class LoadTester extends Thread {
         System.out.println("Starting up with " + job.getNumThreads() + " threads @ " + new Date().toString());
 
         HttpUriRequest request = new HttpGet((job.getUrl()));
-        
+
         startTime = System.currentTimeMillis();
-        
+
         if (job.getType() == Job.T_TIME_LIMIT) {
             cutoffTime = System.currentTimeMillis() + (job.getNumSeconds() * 1000);
         }
@@ -80,10 +91,21 @@ public class LoadTester extends Thread {
         for (int i = 0; i < job.getNumThreads(); i++) {
             createThread(request);
         }
-        
-        TestWatcher watcher = new TestWatcher(this);
-        watcher.start();
-        
+
+        joinThreads();
+
+        Stats stats = collectStats();
+
+        System.out.println("agent: going to report stats to server");
+        try {
+            AgentService.getInstance().report(stats);
+        } catch (Throwable t) {
+            System.out.println("agent: error reproting stats to server: " + t.getMessage());
+            stats.print(0);
+        }
+        return;
+
+
     }
 
     public Job getJob() {
