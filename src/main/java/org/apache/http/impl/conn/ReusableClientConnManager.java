@@ -7,25 +7,17 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.http.conn.ManagedClientConnection;
 import org.apache.http.conn.routing.HttpRoute;
 import org.apache.http.conn.routing.RouteTracker;
-import org.apache.http.conn.scheme.SchemeRegistry;
-import org.apache.http.params.HttpParams;
 
 public class ReusableClientConnManager extends SingleClientConnManager {
-    
+
     private final Log log = LogFactory.getLog(getClass());
-    
-    private boolean alwaysRecreateConnections;
-    
-    public ReusableClientConnManager(SchemeRegistry schreg, boolean alwaysRecreateConnections) {
-        super(null, schreg);
-        this.alwaysRecreateConnections = alwaysRecreateConnections;
+
+    private final boolean alwaysRecreateConnections = true;
+
+    public ReusableClientConnManager() {
+        super();
     }
 
-    public ReusableClientConnManager(HttpParams params, SchemeRegistry schreg) {
-        super(params, schreg);
-        alwaysRecreateConnections = false;
-    }
-    
     @Override
     public synchronized ManagedClientConnection getConnection(HttpRoute route, Object state) {
 
@@ -37,7 +29,7 @@ public class ReusableClientConnManager extends SingleClientConnManager {
         if (log.isDebugEnabled()) {
             log.debug("Get connection for route " + route);
         }
-        
+
         // Skip this check, just assume it's being used correctly :-)
 //        if (managedConn != null)
 //            throw new IllegalStateException(MISUSE_MESSAGE);
@@ -45,10 +37,10 @@ public class ReusableClientConnManager extends SingleClientConnManager {
         // check re-usability of the connection
         boolean recreate = false;
         boolean shutdown = alwaysRecreateConnections;
-        
+
         // Kill the connection if it expired.
         closeExpiredConnections();
-        
+
         if (!alwaysRecreateConnections) {
             if (uniquePoolEntry.connection.isOpen()) {
                 RouteTracker tracker = uniquePoolEntry.tracker;
@@ -72,18 +64,18 @@ public class ReusableClientConnManager extends SingleClientConnManager {
                 log.debug("Problem shutting down connection.", iox);
             }
         }
-        
+
         if (recreate) {
             uniquePoolEntry = null;
             uniquePoolEntry = new PoolEntry();
             if (managedConn != null)
                 managedConn.detach();
         }
-        
+
         managedConn = new ConnAdapter(uniquePoolEntry, route);
 
         return managedConn;
-        
+
     }
 
 }

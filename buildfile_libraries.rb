@@ -13,6 +13,8 @@ COMMONS_DBCP = [
     "commons-dbcp:commons-dbcp:jar:1.4"
 ] + COMMONS_POOL
 
+LOGGING = [ "org.slf4j:slf4j-api:jar:1.6.4", 'org.slf4j:slf4j-log4j12:jar:1.6.4', 'log4j:log4j:jar:1.2.16' ]
+
 HTTPCLIENT = [
     "org.apache.httpcomponents:httpclient:jar:4.1.2",
     "org.apache.httpcomponents:httpcore:jar:4.1.4",
@@ -32,5 +34,6 @@ JETTY = [
   "org.eclipse.jetty:jetty-http:jar:#{JETTY_VERSION}",
   "org.eclipse.jetty:jetty-io:jar:#{JETTY_VERSION}",
   "org.eclipse.jetty:jetty-server:jar:#{JETTY_VERSION}",
-  "org.eclipse.jetty:jetty-util:jar:#{JETTY_VERSION}"
+  "org.eclipse.jetty:jetty-util:jar:#{JETTY_VERSION}",
+  "org.eclipse.jetty:jetty-client:jar:#{JETTY_VERSION}"
   ]

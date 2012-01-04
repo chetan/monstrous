@@ -18,8 +18,19 @@ public class Main {
         job.setNumSeconds(Integer.parseInt(args[1]));
         job.setUrl(args[2]);
 
+        job.setClient(Job.C_JETTY);
+        job.setKeepalive(true);
+
+        System.err.println("Running job:");
+        System.err.println(job.toString());
+
         LoadTester tester = new LoadTester(job);
         tester.start();
+        tester.join();
+
+//        tester = new LoadTester(job);
+//        tester.start();
+//        tester.join();
     }
 
 }

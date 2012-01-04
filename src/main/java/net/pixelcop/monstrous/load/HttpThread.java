@@ -1,61 +1,39 @@
 package net.pixelcop.monstrous.load;
 
-import java.net.URI;
+import java.io.IOException;
 
+import net.pixelcop.monstrous.Job;
 import net.pixelcop.monstrous.Stats;
 
-import org.apache.http.HttpHost;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.impl.NoConnectionReuseStrategy;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.impl.conn.ReusableClientConnManager;
-import org.apache.http.protocol.HttpContext;
+public abstract class HttpThread extends Thread {
 
-public class HttpThread extends Thread {
+    protected final Stats stats;
 
-    private final DefaultHttpClient client;
-    private final HttpUriRequest request;
-    private final HttpHost host;
+    protected long cutoffTime;
 
-    private final Stats stats;
-
-    private long cutoffTime;
-
-    public HttpThread(HttpUriRequest request) {
-        this.client = new DefaultHttpClient(new ReusableClientConnManager(HttpClientUtils.createSimpleRegistry(), true), null);
-        client.setReuseStrategy(new NoConnectionReuseStrategy());
-
+    public HttpThread() {
         this.cutoffTime = 0;
-        this.request = request;
-        this.host = determineTarget(request);
-
         this.stats = new Stats();
     }
+
+    public abstract void sendRequest() throws IOException;
 
     @Override
     public void run() {
         do {
             try {
-                HttpResponse res = client.execute(host, request, (HttpContext) null);
-
-                int status = res.getStatusLine().getStatusCode();
-                if (status >= 200 && status < 300) {
-                    stats.incrSuccessCount();
-                } else {
-                    stats.incrErrorCount();
-                }
+                sendRequest();
 
                 // System.out.println(res.getStatusLine());
                 // System.out.println(res.getFirstHeader("Date"));
             } catch (Throwable t) {
-                t.printStackTrace();
+                //LOG.error("error", t);
                 stats.incrErrorCount();
             }
 
             if (cutoffTime != 0 && System.currentTimeMillis() >= cutoffTime) {
                 // hit the time limit
-                System.out.println("time limit reached in thread " + getId());
+                //System.out.println("time limit reached in thread " + getId());
                 return;
             }
 
@@ -63,25 +41,8 @@ public class HttpThread extends Thread {
     }
 
     public void printStatus() {
-
         System.out.println("Success: " + stats.getSuccessCount());
         System.out.println("Error: " + stats.getErrorCount());
-
-    }
-
-    private HttpHost determineTarget(HttpUriRequest request) {
-        // A null target may be acceptable if there is a default target.
-        // Otherwise, the null target is detected in the director.
-        HttpHost target = null;
-
-        URI requestURI = request.getURI();
-        if (requestURI.isAbsolute()) {
-            target = new HttpHost(
-                    requestURI.getHost(),
-                    requestURI.getPort(),
-                    requestURI.getScheme());
-        }
-        return target;
     }
 
     public Stats getStats() {
@@ -90,6 +51,19 @@ public class HttpThread extends Thread {
 
     public void setCutoffTime(long cutoffTime) {
         this.cutoffTime = cutoffTime;
+    }
+
+    public static HttpThread create(Job job) {
+
+        if (job.getClient().equalsIgnoreCase(Job.C_APACHE)) {
+            return new ApacheHttpThread(job);
+        }
+
+        if (job.getClient().equalsIgnoreCase(Job.C_JETTY)) {
+            return new JettyHttpThread(job);
+        }
+
+        return null;
     }
 
 }

@@ -7,16 +7,13 @@ import net.pixelcop.monstrous.Job;
 import net.pixelcop.monstrous.Stats;
 import net.pixelcop.monstrous.agent.AgentService;
 
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpUriRequest;
-
 public class LoadTester extends Thread {
 
-    private Job job;
-    private ArrayList<HttpThread> threads;
+    protected Job job;
+    protected ArrayList<HttpThread> threads;
 
-    private long startTime;
-    private long cutoffTime;
+    protected long startTime;
+    protected long cutoffTime;
 
     public LoadTester(Job job) {
         this.job = job;
@@ -36,11 +33,11 @@ public class LoadTester extends Thread {
         return stats;
     }
 
-    private void createThread(HttpUriRequest request) {
-        HttpThread t = new HttpThread(request);
+    protected HttpThread createThread() {
+        HttpThread t = HttpThread.create(job);
         t.setCutoffTime(cutoffTime);
         t.start();
-        threads.add(t);
+        return t;
     }
 
 //    public void shutdown() {
@@ -79,17 +76,14 @@ public class LoadTester extends Thread {
 
         System.out.println("Starting up with " + job.getNumThreads() + " threads @ " + new Date().toString());
 
-        HttpUriRequest request = new HttpGet((job.getUrl()));
-
         startTime = System.currentTimeMillis();
-
         if (job.getType() == Job.T_TIME_LIMIT) {
             cutoffTime = System.currentTimeMillis() + (job.getNumSeconds() * 1000);
         }
 
         threads = new ArrayList<HttpThread>();
         for (int i = 0; i < job.getNumThreads(); i++) {
-            createThread(request);
+            threads.add(createThread());
         }
 
         joinThreads();
@@ -101,7 +95,7 @@ public class LoadTester extends Thread {
             AgentService.getInstance().report(stats);
         } catch (Throwable t) {
             System.out.println("agent: error reproting stats to server: " + t.getMessage());
-            stats.print(0);
+            stats.print(startTime);
         }
         return;
 

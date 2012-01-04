@@ -10,7 +10,7 @@ repositories.remote << "http://mirrors.ibiblio.org/pub/mirrors/maven2"
 
 require 'buildfile_libraries'
 
-JARS = artifacts([ HTTPCLIENT, JSON_LIB, JETTY ].flatten.uniq)
+JARS = artifacts([ HTTPCLIENT, JSON_LIB, JETTY, LOGGING ].flatten.uniq)
 
 desc "The Monstrous project"
 define "monstrous" do
@@ -18,11 +18,11 @@ define "monstrous" do
   project.version = VERSION_NUMBER
   project.group = GROUP
   manifest["Implementation-Vendor"] = COPYRIGHT
-  
+
   eclipse.natures :java
-  
+
   compile.with JARS
-  
+
   package(:jar)
 
   package(:zip).path("#{project.name}-#{VERSION_NUMBER}").tap do |path|
@@ -35,5 +35,5 @@ define "monstrous" do
       path.include _("#{d}")
     end
   end
-  
+
 end
